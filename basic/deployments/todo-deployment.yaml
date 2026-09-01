@@ -1,0 +1,113 @@
+# This is a sample deployment for the todo-java application.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-deployment
+  namespace: workshop
+  labels:
+    app: todo-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: todo-deployment
+  template:
+    metadata:
+      labels:
+        app: todo-deployment
+    spec:
+      containers:
+        - name: todo
+          image: quay.io/rh_rh/todo-java:latest
+          imagePullPolicy: Always
+
+          # Resource requests and limits can be set for a container.
+          resources:
+            requests:
+              cpu: 100m
+              memory: 250Mi
+            limits:
+              cpu: 500m
+              memory: 768Mi
+
+          # Ports can be exposed from a container.
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+
+          # Environment variables can be set from a ConfigMap. 
+          # Uncomment the following lines to use the ConfigMap created in todo-cm.yaml
+          # env:
+          #   - name: TZ
+          #     valueFrom:
+          #       configMapKeyRef:
+          #         name: todo-java-configmap
+          #         key: timezone
+          #   - name: JAVA_OPTIONS
+          #     valueFrom:
+          #       configMapKeyRef:
+          #         name: todo-java-configmap
+          #         key: java_options
+          #   - name: SPRING_ACTIVE_PROFILES
+          #     valueFrom:
+          #       configMapKeyRef:
+          #         name: todo-java-configmap
+          #         key: spring_active_profiles
+
+---
+# This is a sample service for the todo-java application.
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-deployment-svc
+  namespace: workshop
+  labels:
+    app: todo-deployment
+spec:
+  selector:
+    app: todo-deployment
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+      protocol: TCP
+
+---
+# This is a sample route for the todo-java application.
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: todo-deployment-svc-workshop
+spec:
+  to:
+    kind: Service
+    name: todo-deployment-svc
+    weight: 100
+  port:
+    targetPort: 8080
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  wildcardPolicy: None
+
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: todo-deployment-svc-workshop
+#   annotations:
+#     route.openshift.io/termination: edge
+#     route.openshift.io/insecure-edge-termination-policy: Redirect
+# spec:
+#   rules:
+#     - host: todo-deployment-svc-workshop.apps.cluster-pvh8r.dyn.redhatworkshops.io
+#       http:
+#         paths:
+#           - path: /
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: todo-deployment-svc
+#                 port:
+#                   number: 8080

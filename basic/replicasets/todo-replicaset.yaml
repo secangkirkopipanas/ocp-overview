@@ -1,0 +1,62 @@
+# This is a sample pod for the todo-java application.
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: todo-replicaset
+  namespace: workshop
+  labels:
+    app: todo-replicaset
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: todo-replicaset
+  template:
+    metadata:
+      labels:
+        app: todo-replicaset
+    spec:
+      containers:
+        - name: todo
+          image: quay.io/rh_rh/todo-java:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+
+---
+# This is a sample service for the todo-java application.
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-replicaset-svc
+  namespace: workshop
+  labels:
+    app: todo-replicaset
+spec:
+  selector:
+    app: todo-replicaset
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+      protocol: TCP
+
+---
+# This is a sample route for the todo-java application.
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: todo-replicaset-svc-workshop
+spec:
+  to:
+    kind: Service
+    name: todo-replicaset-svc
+    weight: 100
+  port:
+    targetPort: 8080
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  wildcardPolicy: None

@@ -1,0 +1,20 @@
+# This is a basic DaemonSet configuration for the todo-java application.
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: todo-daemonset
+  namespace: workshop
+spec:
+  selector:
+    matchLabels:
+      app: todo-daemonset
+  template:
+    metadata:
+      labels:
+        app: todo-daemonset
+    spec:
+      containers:
+        - name: todo
+          image: quay.io/rh_rh/todo-java:latest
+          ports:
+            - containerPort: 8080
