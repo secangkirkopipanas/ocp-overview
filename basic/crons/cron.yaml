@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: my-cronjob
+  namespace: workshop1
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: my-cronjob
+              image: registry.access.redhat.com/ubi9/ubi-minimal:latest
+              command:
+                - /bin/sh
+                - -c
+                - echo "Executed at $(date)"
+          restartPolicy: OnFailure
