@@ -35,31 +35,15 @@ You will need:
 * `oc` CLI installed
 * Access to the container image:
 
-```text
-quay.io/rh_rh/todo-java:latest
-```
+## 1. Login to OCP cluster
 
-Verify your OpenShift connection:
+Login to the cluster:
 
 ```bash
-oc whoami
+./oc-login.sh <username> <password>
 ```
 
-Check the cluster:
-
-```bash
-oc cluster-info
-```
-
-## 1. Create a Project
-
-Create a dedicated OpenShift project for the workshop:
-
-```bash
-oc new-project todo-workshop
-```
-
-Verify:
+Verify the namespace:
 
 ```bash
 oc project
