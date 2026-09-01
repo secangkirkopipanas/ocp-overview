@@ -3,7 +3,6 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: todo-daemonset
-  namespace: workshop
 spec:
   selector:
     matchLabels:
