@@ -1,0 +1,75 @@
+# Namespace Role for Istio CRDs
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: view-istio-crds
+rules:
+  # VirtualServices
+  - apiGroups: ["networking.istio.io"]
+    resources: ["virtualservices"]
+    verbs: ["get", "list", "watch", "create", "update", "delete"]
+  # PeerAuthentications
+  - apiGroups: ["security.istio.io"]
+    resources: ["peerauthentications"]
+    verbs: ["get", "list", "watch", "create", "update", "delete"]
+  # DestinationRules
+  - apiGroups: ["networking.istio.io"]
+    resources: ["destinationrules"]
+    verbs: ["get", "list", "watch", "create", "update", "delete"]
+
+# Cluster Role for Istio CRDs, read-only for non cluster-admin users
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: view-cluster-istio-crds
+rules:
+- apiGroups: ["sailoperator.io"]
+  resources: ["istiocnis"]
+  verbs: ["get", "list", "watch"]
+
+# Role Binding for Istio CRDs for developers group (LDAP)
+# ---
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: RoleBinding
+# metadata:
+#   name: view-istio-crds-group-binding
+# subjects:
+# - kind: Group
+#   name: ldap:developers
+#   apiGroup: rbac.authorization.k8s.io
+# roleRef:
+#   kind: Role
+#   name: view-istio-crds
+#   apiGroup: rbac.authorization.k8s.io 
+
+# Role Binding for Istio CRDs for individual user
+#---
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: RoleBinding
+# metadata:
+#   name: view-istio-crds-user-binding
+# subjects:
+# - kind: User
+#   name: robert@redhat.com
+#   apiGroup: rbac.authorization.k8s.io
+# roleRef:
+#   kind: Role
+#   name: view-istio-crds
+#   apiGroup: rbac.authorization.k8s.io 
+
+# Role Binding for Istio CRDs for individual user
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: view-istio-crds-user-binding
+subjects:
+- kind: User
+  name: user1
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: view-istio-crds
+  apiGroup: rbac.authorization.k8s.io 

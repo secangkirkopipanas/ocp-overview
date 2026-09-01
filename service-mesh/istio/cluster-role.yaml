@@ -1,0 +1,56 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: servicemesh-manager
+rules:
+  # Kubernetes Gateway API (The "Ambient" way to manage entry points)
+  - apiGroups: ["gateway.networking.k8s.io"]
+    resources: ["gateways", "gatewayclasses", "httproutes", "grpcroutes", "tcproutes", "tlsroutes"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  # Istio Configuration (For Waypoint proxies and advanced routing)
+  - apiGroups: ["networking.istio.io"]
+    resources: ["virtualservices", "destinationrules", "gateways", "serviceentries", "sidecars", "workloadentries", "workloadgroups"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  # Security Policies (Authorization in the mesh)
+  - apiGroups: ["security.istio.io"]
+    resources: ["authorizationpolicies", "peerauthentications", "requestauthentications"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  # Observability (ServiceMonitors for Prometheus)
+  - apiGroups: ["monitoring.coreos.com"]
+    resources: ["servicemonitors", "podmonitors"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  # Essential Discovery (To see the pods/services being meshed)
+  - apiGroups: [""]
+    resources: ["services", "pods", "endpoints"]
+    verbs: ["get", "list", "watch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: waypoint-proxy-impersonator
+rules:
+- apiGroups: [""]
+  resources: ["serviceaccounts/token"]
+  verbs: ["create"]
+- apiGroups: [""]
+  resources: ["serviceaccounts/impersonate"]
+  verbs: ["impersonate"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: waypoint-proxy-impersonation
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: waypoint-proxy-impersonator
+subjects:
+- kind: ServiceAccount
+  name: waypoint-proxy
+  namespace: webstore-dev

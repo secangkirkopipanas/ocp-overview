@@ -1,0 +1,14 @@
+kind: Kustomization
+
+resources:
+- deployments/redis.yaml
+- deployments/util.yaml
+- deployments/order.yaml
+- deployments/product.yaml
+- deployments/user.yaml
+- deployments/ui.yaml
+- deployments/istio-ingress-gateway.yaml
+- deployments/gateway.yaml
+- deployments/virtual-service.yaml
+- peer-auth.yaml
+- crd-rbac.yaml

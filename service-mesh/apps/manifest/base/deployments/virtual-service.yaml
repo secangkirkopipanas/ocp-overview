@@ -1,0 +1,57 @@
+---
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: virtual-service
+spec:
+  hosts:
+  - "*.apps.cluster-pvh8r.dyn.redhatworkshops.io"
+  gateways:
+  - external-gateway
+  http:
+  - match:
+    - uri:
+        exact: /
+    - uri:
+        prefix: /assets/
+    route:
+    - destination:
+        host: mesh-ui-service
+        port:
+          number: 80
+  - match:
+    - uri:
+        exact: /svc/user
+    - uri:
+        prefix: /svc/user/
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: user-service
+        port:
+          number: 80
+  - match:
+    - uri:
+        exact: /svc/order
+    - uri:
+        prefix: /svc/order/
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: order-service
+        port:
+          number: 80
+  - match:
+    - uri:
+        exact: /svc/product
+    - uri:
+        prefix: /svc/product/
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: product-service
+        port:
+          number: 80

@@ -1,0 +1,42 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: istio-cni
+  labels:
+    istio-discovery: enabled
+
+---
+apiVersion: sailoperator.io/v1
+kind: IstioCNI
+metadata:
+  name: default
+spec:
+  namespace: istio-cni
+  values:
+    cni:
+      ambient:
+        reconcileIptablesOnStartup: true
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: istiocni-podmonitor
+  namespace: istio-cni
+  labels:
+    app: istiocni
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: istio-cni
+  podMetricsEndpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s
