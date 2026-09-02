@@ -33,7 +33,7 @@ Requirements:
 | Requirement     | Value                                        |
 | --------------- | -------------------------------------------- |
 | Deployment name | `nginx`                                      |
-| Image           | `registry.access.redhat.com/hi/nginx:latest` |
+| Image           | `registry.access.redhat.com/ubi9/nginx-120:9.8-1787720640` |
 | Replicas        | `2`                                          |
 | Container port  | `8080`                                       |
 
