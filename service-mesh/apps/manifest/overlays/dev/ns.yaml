@@ -4,3 +4,4 @@ metadata:
   name: webstore-dev
   labels:
     istio-discovery: enabled
+    istio-injection: enabled
