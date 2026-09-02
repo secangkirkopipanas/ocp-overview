@@ -37,7 +37,25 @@ spec:
     strategy: openshift
   external_services:
     grafana:
-      enabled: false
+      enabled: true
+      internal_url: 'http://grafana.istio-system.svc.cluster.local:3000'
+      auth:
+        type: none
+      datasource_uid: prometheus
+      dashboards:
+        - name: "Service Mesh Traffic"
+        - name: "Istio Mesh Dashboard"
+        - name: "Istio Service Dashboard"
+          variables:
+            datasource: var-datasource
+            service: var-service
+        - name: "Istio Workload Dashboard"
+          variables:
+            datasource: var-datasource
+            namespace: var-namespace
+            workload: var-workload
+        - name: "Istio Control Plane Dashboard"
+        - name: "Istio Performance Dashboard"
     prometheus:
       auth:
         type: bearer

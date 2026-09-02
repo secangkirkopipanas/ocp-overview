@@ -1,0 +1,28 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: istio-system
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+resources:
+  - grafana.yaml
+
+configMapGenerator:
+  - name: grafana-home-dashboard
+    files:
+      - dashboards/mesh-traffic.json
+  # Split dashboards so each ConfigMap stays under the 256KiB
+  # kubectl.kubernetes.io/last-applied-configuration annotation limit.
+  - name: grafana-istio-dashboards-overview
+    files:
+      - dashboards/istio-mesh-dashboard.json
+      - dashboards/istio-performance-dashboard.json
+      - dashboards/pilot-dashboard.json
+  - name: grafana-istio-dashboards-service
+    files:
+      - dashboards/istio-service-dashboard.json
+  - name: grafana-istio-dashboards-workload
+    files:
+      - dashboards/istio-workload-dashboard.json
