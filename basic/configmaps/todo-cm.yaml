@@ -6,4 +6,4 @@ metadata:
 data:
   timezone: "Asia/Singapore"
   java_options: "-Xms256m -Xmx512m"
-  spring_active_profiles: "prod"
+  spring_active_profiles: "dev"
