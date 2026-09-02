@@ -1,0 +1,43 @@
+# This is a sample pod definition that runs a utility container.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: util
+  labels:
+    app: util
+spec:
+  containers:
+    - name: util
+      image: quay.io/rh_rh/utilities:ubi10-latest
+      command: ["tail", "-f", "/dev/null"]
+      imagePullPolicy: IfNotPresent
+      securityContext:
+        allowPrivilegeEscalation: false
+        runAsNonRoot: true
+        capabilities:
+          drop: [ "ALL" ]
+        seccompProfile:
+          type: RuntimeDefault
+
+---
+# This is a sample pod definition that runs a utility container.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: util
+  namespace: admin-devspaces
+  labels:
+    app: util
+spec:
+  containers:
+    - name: util
+      image: quay.io/rh_rh/utilities:ubi10-latest
+      command: ["tail", "-f", "/dev/null"]
+      imagePullPolicy: IfNotPresent
+      securityContext:
+        allowPrivilegeEscalation: false
+        runAsNonRoot: true
+        capabilities:
+          drop: [ "ALL" ]
+        seccompProfile:
+          type: RuntimeDefault
