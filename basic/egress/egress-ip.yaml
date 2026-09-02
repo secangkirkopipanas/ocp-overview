@@ -1,0 +1,10 @@
+apiVersion: k8s.ovn.org/v1
+kind: EgressIP
+metadata:
+  name: app-egress-ip
+spec:
+  egressIPs:
+    - 192.168.12.150  
+  namespaceSelector:
+    matchLabels:
+      egress-group: static-outbound
