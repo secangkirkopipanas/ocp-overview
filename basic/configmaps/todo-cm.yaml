@@ -7,3 +7,36 @@ data:
   timezone: "Asia/Singapore"
   java_options: "-Xms256m -Xmx512m"
   spring_active_profiles: "dev"
+
+---
+# This is a ConfigMap for the todo-java application
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: todo-java-configmap-dev
+data:
+  timezone: "Asia/Singapore"
+  java_options: "-Xms256m -Xmx512m"
+  spring_active_profiles: "dev"
+
+---
+# This is a ConfigMap for the todo-java application
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: todo-java-configmap-uat
+data:
+  timezone: "Asia/Singapore"
+  java_options: "-Xms256m -Xmx512m"
+  spring_active_profiles: "dev"
+
+---
+# This is a ConfigMap for the todo-java application
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: todo-java-configmap-prod
+data:
+  timezone: "Asia/Singapore"
+  java_options: "-Xms256m -Xmx512m"
+  spring_active_profiles: "dev"

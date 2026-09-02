@@ -15,6 +15,14 @@ spec:
       labels:
         app: todo-deployment
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: node-role.kubernetes.io/master
+                    operator: Exists
+      
       containers:
         - name: todo
           image: quay.io/rh_rh/todo-java:latest

@@ -5,7 +5,7 @@
 Deploy an NGINX application on OpenShift using:
 
 ```text
-registry.access.redhat.com/ubi9/nginx-120:9.8-1787720640
+registry.access.redhat.com/hi/nginx:latest
 ```
 
 The application must:
@@ -33,7 +33,7 @@ Requirements:
 | Requirement     | Value                                        |
 | --------------- | -------------------------------------------- |
 | Deployment name | `nginx`                                      |
-| Image           | `registry.access.redhat.com/ubi9/nginx-120:9.8-1787720640` |
+| Image           | `registry.access.redhat.com/hi/nginx:latest` |
 | Replicas        | `2`                                          |
 | Container port  | `8080`                                       |
 
