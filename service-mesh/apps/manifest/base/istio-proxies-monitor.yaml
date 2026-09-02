@@ -1,54 +1,10 @@
-kind: Namespace
-apiVersion: v1
-metadata:
-  name: istio-cni
-  labels:
-    istio-discovery: enabled
-
----
-apiVersion: sailoperator.io/v1
-kind: IstioCNI
-metadata:
-  name: default
-spec:
-  namespace: istio-cni
-  values:
-    cni:
-      ambient:
-        reconcileIptablesOnStartup: true
-      resources:
-        requests:
-          cpu: 100m
-          memory: 128Mi
-        limits:
-          cpu: 500m
-          memory: 512Mi
-
----
+# Kiali traffic graphs are built from Envoy istio_* metrics, not app /metrics.
+# OpenShift user-workload monitoring ignores spec.namespaceSelector, so this
+# PodMonitor must live in each mesh namespace (kustomize sets the namespace).
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
-  name: istiocni-podmonitor
-  namespace: istio-cni
-  labels:
-    app: istiocni
-spec:
-  selector:
-    matchLabels:
-      app.kubernetes.io/instance: istio-cni
-  podMetricsEndpoints:
-    - port: metrics
-      path: /metrics
-      interval: 30s
-
----
-# ztunnel runs in this namespace and is the L4 telemetry source for ambient
-# namespaces (e.g. webstore-uat). Without this scrape, Kiali has no ambient graph.
-apiVersion: monitoring.coreos.com/v1
-kind: PodMonitor
-metadata:
-  name: istio-ztunnel-monitor
-  namespace: istio-cni
+  name: istio-proxies-monitor
 spec:
   selector:
     matchExpressions:

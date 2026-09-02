@@ -12,3 +12,4 @@ resources:
 - deployments/virtual-service.yaml
 - peer-auth.yaml
 - crd-rbac.yaml
+- istio-proxies-monitor.yaml

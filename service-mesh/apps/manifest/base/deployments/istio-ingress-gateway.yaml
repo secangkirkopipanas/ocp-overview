@@ -58,24 +58,6 @@ spec:
             memory: "512Mi"
 
 ---
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: istio-ingressgateway-service-monitor
-spec:
-  selector:
-    matchLabels:
-      istio: ingressgateway
-  namespaceSelector:
-    matchNames:
-      - webstore-dev
-  podTarget: true
-  endpoints:
-    - port: http-envoy-prom
-      path: /stats/prometheus
-      interval: 30s
-
----
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
@@ -113,47 +95,6 @@ subjects:
 - kind: ServiceAccount
   name: default
 
-# ---
-# kind: NetworkPolicy
-# apiVersion: networking.k8s.io/v1
-# metadata:
-#   name: deny-by-default
-# spec:
-#   podSelector: {}
-#   policyTypes:
-#     - Ingress
-
-# ---
-# kind: NetworkPolicy
-# apiVersion: networking.k8s.io/v1
-# metadata:
-#   name: allow-same-namespace
-# spec:
-#   podSelector: {}
-#   ingress:
-#     - from:
-#         - podSelector: {}
-#   policyTypes:
-#     - Ingress
-
-# ---
-# kind: NetworkPolicy
-# apiVersion: networking.k8s.io/v1
-# metadata:
-#   name: allow-from-kube-apiserver-operator
-# spec:
-#   podSelector: {}
-#   ingress:
-#     - from:
-#         - podSelector:
-#             matchLabels:
-#               app: kube-apiserver-operator
-#           namespaceSelector:
-#             matchLabels:
-#               kubernetes.io/metadata.name: openshift-kube-apiserver-operator
-#   policyTypes:
-#     - Ingress
-
 ---
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
@@ -169,20 +110,35 @@ spec:
   policyTypes:
     - Ingress
 
-# ---
-# kind: NetworkPolicy
-# apiVersion: networking.k8s.io/v1
-# metadata:
-#   name: allow-from-openshift-monitoring
-# spec:
-#   podSelector: {}
-#   ingress:
-#     - from:
-#         - namespaceSelector:
-#             matchLabels:
-#               network.openshift.io/policy-group: monitoring
-#   policyTypes:
-#     - Ingress
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-from-openshift-monitoring
+spec:
+  podSelector: {}
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              network.openshift.io/policy-group: monitoring
+  policyTypes:
+    - Ingress
+
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-from-user-workload-monitoring
+spec:
+  podSelector: {}
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: openshift-user-workload-monitoring
+  policyTypes:
+    - Ingress
 
 ---
 apiVersion: networking.k8s.io/v1
@@ -198,3 +154,21 @@ spec:
             istio-discovery: enabled
   policyTypes:
     - Ingress
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-kiali
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: istio-system
+          podSelector:
+            matchLabels:
+              app: kiali

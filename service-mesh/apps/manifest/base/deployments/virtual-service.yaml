@@ -5,7 +5,7 @@ metadata:
   name: virtual-service
 spec:
   hosts:
-  - "*.apps.cluster-pvh8r.dyn.redhatworkshops.io"
+  - "*"
   gateways:
   - external-gateway
   http:
