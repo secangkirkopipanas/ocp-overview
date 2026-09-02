@@ -17,3 +17,28 @@ spec:
           image: quay.io/rh_rh/todo-java:latest
           ports:
             - containerPort: 8080
+
+          # Startup, liveness, and readiness probes can be configured for a container.
+          startupProbe:
+            httpGet:
+              path: /management/health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 30
+          livenessProbe:
+            httpGet:
+              path: /management/health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /management/health
+              port: 8080
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
