@@ -3,16 +3,22 @@ kind: CronJob
 metadata:
   name: my-cronjob
 spec:
-  schedule: "*/5 * * * *"
+  schedule: "* * * * *"
+  # Allow / Forbid / Replace
+  concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       template:
         spec:
           containers:
             - name: my-cronjob
-              image: registry.access.redhat.com/ubi9/ubi-minimal:latest
-              command:
-                - /bin/sh
-                - -c
-                - echo "Executed at $(date)"
+              image: quay.io/rh_rh/utilities:ubi10-latest
+              command: [ "/bin/sh", "-c" ]
+              args:
+                - |
+                  echo "Executed at $(date)"
+                  oc whoami
+                  oc projects
+                  oc get pods
+                  oc exec todo-daemonset-5x8qh -- ls -al /
           restartPolicy: OnFailure
