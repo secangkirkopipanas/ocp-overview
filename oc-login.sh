@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Fixed OpenShift cluster URL
-OCP_SERVER="https://api.cluster-tb6x2.dyn.redhatworkshops.io:6443"
+OCP_SERVER="https://api.cluster-thslr.thslr.sandbox3529.opentlc.com:6443"
 
 # Check parameters
 if [ "$#" -ne 2 ]; then
