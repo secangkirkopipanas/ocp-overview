@@ -1,15 +1,48 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+labels:
+- pairs:
+    app.kubernetes.io/part-of: webstore
+  includeSelectors: false
+
 resources:
-- deployments/redis.yaml
-- deployments/util.yaml
-- deployments/order.yaml
-- deployments/product.yaml
-- deployments/user.yaml
-- deployments/ui.yaml
-- deployments/istio-ingress-gateway.yaml
-- deployments/gateway.yaml
-- deployments/virtual-service.yaml
-- peer-auth.yaml
-- crd-rbac.yaml
-- istio-proxies-monitor.yaml
+- postgres.yaml
+- account.yaml
+- products.yaml
+- products-v2.yaml
+- order.yaml
+- payment.yaml
+- ui.yaml
+- istio-ingress-gateway.yaml
+- istio-external-gateway.yaml
+- istio-virtual-service.yaml
+- peer-authentication.yaml
+- istio-proxies-podmonitor.yaml
+- service-monitors.yaml
+- network-policies.yaml
+- telemetry.yaml
+- canary-ip-config.yaml
+
+configMapGenerator:
+- name: webstore-config
+  literals:
+  - API_VERSION=v1
+  - DEPLOYMENT_COLOR=blue
+  - RELEASE_CHANNEL=stable
+  - PRODUCTS_URL=http://products:8080
+  - PAYMENT_URL=http://payment:8080
+  - PRODUCTS_API_PREFIX=/api/v1
+  - PAYMENT_API_PREFIX=/api/v1
+
+secretGenerator:
+- name: webstore
+  literals:
+  - POSTGRES_DB=webstore
+  - POSTGRES_USER=webstore
+  - POSTGRES_PASSWORD=webstore
+  - JWT_SECRET=ocp-webstore-jwt-secret
+  - DATABASE_URL=postgresql://webstore:webstore@postgres:5432/webstore
+
+generatorOptions:
+  disableNameSuffixHash: true

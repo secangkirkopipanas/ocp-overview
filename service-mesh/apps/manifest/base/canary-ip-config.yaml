@@ -1,0 +1,14 @@
+# Client IP allowlists for catalog canary routing (matched on X-Forwarded-For).
+# Edit the regex values below, then re-apply the overlay.
+#
+# vip-xff-regex   -> 100% traffic to products-v2 (full green)
+# split-xff-regex -> 90/10 split (same as UI v2 + X-Canary-Split header)
+#
+# Use "a^" to disable a list (matches nothing). Escape dots: 10.0.0.1 -> 10\\.0\\.0\\.1
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: canary-ip-routing
+data:
+  vip-xff-regex: "a^"
+  split-xff-regex: "a^"

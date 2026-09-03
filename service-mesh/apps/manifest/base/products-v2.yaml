@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: products-v2
+  labels:
+    app: products-v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: products-v2
+  template:
+    metadata:
+      labels:
+        app: products-v2
+        version: v2
+    spec:
+      containers:
+      - name: products
+        image: quay.io/rh_rh/ocp-webstore-products:latest
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: webstore-config
+        - secretRef:
+            name: webstore
+        env:
+        - name: API_VERSION
+          value: v2
+        - name: DEPLOYMENT_COLOR
+          value: green
+        - name: RELEASE_CHANNEL
+          value: canary
+        - name: SERVE_V1_COMPAT
+          value: "true"
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 30
+          periodSeconds: 2
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 15
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: products-v2
+  labels:
+    app: products-v2
+spec:
+  ports:
+  - name: http
+    port: 8080
+    targetPort: http
+  selector:
+    app: products-v2

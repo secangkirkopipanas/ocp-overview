@@ -1,0 +1,150 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: webstore
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - webstore-gateway
+  http:
+  - name: canary-vip
+    match:
+    - headers:
+        x-forwarded-for:
+          regex: "a^"
+      uri:
+        prefix: /svc/products/api/v1
+    rewrite:
+      uriRegexRewrite:
+        match: ^/svc/products/api/v1/?(.*)$
+        rewrite: /api/v1/\1
+    route:
+    - destination:
+        host: products-v2
+        port:
+          number: 8080
+      weight: 100
+  - name: canary-split-header
+    match:
+    - headers:
+        x-canary-split:
+          exact: "true"
+      uri:
+        prefix: /svc/products/api/v1
+    rewrite:
+      uriRegexRewrite:
+        match: ^/svc/products/api/v1/?(.*)$
+        rewrite: /api/v1/\1
+    route:
+    - destination:
+        host: products
+        port:
+          number: 8080
+      weight: 90
+    - destination:
+        host: products-v2
+        port:
+          number: 8080
+      weight: 10
+  - name: canary-split-ip
+    match:
+    - headers:
+        x-forwarded-for:
+          regex: "a^"
+      uri:
+        prefix: /svc/products/api/v1
+    rewrite:
+      uriRegexRewrite:
+        match: ^/svc/products/api/v1/?(.*)$
+        rewrite: /api/v1/\1
+    route:
+    - destination:
+        host: products
+        port:
+          number: 8080
+      weight: 90
+    - destination:
+        host: products-v2
+        port:
+          number: 8080
+      weight: 10
+  - name: products-v1-stable
+    match:
+    - uri:
+        prefix: /svc/products/api/v1
+    rewrite:
+      uriRegexRewrite:
+        match: ^/svc/products/api/v1/?(.*)$
+        rewrite: /api/v1/\1
+    route:
+    - destination:
+        host: products
+        port:
+          number: 8080
+      weight: 100
+  - match:
+    - uri:
+        prefix: /svc/products/api/v2
+    rewrite:
+      uriRegexRewrite:
+        match: ^/svc/products/api/v2/?(.*)$
+        rewrite: /api/v2/\1
+    route:
+    - destination:
+        host: products-v2
+        port:
+          number: 8080
+  - match:
+    - uri:
+        prefix: /svc/products
+    rewrite:
+      uriRegexRewrite:
+        match: ^/svc/products/?(.*)$
+        rewrite: /\1
+    route:
+    - destination:
+        host: products
+        port:
+          number: 8080
+  - match:
+    - uri:
+        prefix: /svc/account
+    rewrite:
+      uriRegexRewrite:
+        match: ^/svc/account/?(.*)$
+        rewrite: /\1
+    route:
+    - destination:
+        host: account
+        port:
+          number: 8080
+  - match:
+    - uri:
+        prefix: /svc/order
+    rewrite:
+      uriRegexRewrite:
+        match: ^/svc/order/?(.*)$
+        rewrite: /\1
+    route:
+    - destination:
+        host: order
+        port:
+          number: 8080
+  - match:
+    - uri:
+        prefix: /svc/payment
+    rewrite:
+      uriRegexRewrite:
+        match: ^/svc/payment/?(.*)$
+        rewrite: /\1
+    route:
+    - destination:
+        host: payment
+        port:
+          number: 8080
+  - route:
+    - destination:
+        host: ui
+        port:
+          number: 8080

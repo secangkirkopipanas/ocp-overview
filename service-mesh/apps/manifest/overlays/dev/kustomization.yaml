@@ -1,9 +1,45 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 namespace: webstore-dev
+
 resources:
-- ../../base/
-- ns.yaml
+- ../../base
+- namespace.yaml
 
 patches:
-- path: delete-ns-patch.yaml
+- path: canary-ip-overrides.yaml
+
+replacements:
+- source:
+    kind: ConfigMap
+    name: canary-ip-routing
+    fieldPath: data.vip-xff-regex
+  targets:
+  - select:
+      kind: VirtualService
+      name: webstore
+    fieldPaths:
+    - spec.http.0.match.0.headers.x-forwarded-for.regex
+- source:
+    kind: ConfigMap
+    name: canary-ip-routing
+    fieldPath: data.split-xff-regex
+  targets:
+  - select:
+      kind: VirtualService
+      name: webstore
+    fieldPaths:
+    - spec.http.2.match.0.headers.x-forwarded-for.regex
+
+images:
+- name: quay.io/rh_rh/ocp-webstore-account
+  newTag: latest
+- name: quay.io/rh_rh/ocp-webstore-products
+  newTag: latest
+- name: quay.io/rh_rh/ocp-webstore-order
+  newTag: latest
+- name: quay.io/rh_rh/ocp-webstore-payment
+  newTag: latest
+- name: quay.io/rh_rh/ocp-webstore-ui
+  newTag: latest

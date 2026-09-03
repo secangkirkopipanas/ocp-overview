@@ -1,0 +1,118 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: account-service-monitor
+  labels:
+    openshift.io/user-monitoring: "true"
+spec:
+  targetLabels:
+  - app
+  selector:
+    matchLabels:
+      app: account
+  endpoints:
+  - port: http
+    path: /metrics
+    interval: 30s
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: products-service-monitor
+  labels:
+    openshift.io/user-monitoring: "true"
+spec:
+  targetLabels:
+  - app
+  selector:
+    matchLabels:
+      app: products
+  endpoints:
+  - port: http
+    path: /metrics
+    interval: 30s
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: products-v2-service-monitor
+  labels:
+    openshift.io/user-monitoring: "true"
+spec:
+  targetLabels:
+  - app
+  selector:
+    matchLabels:
+      app: products-v2
+  endpoints:
+  - port: http
+    path: /metrics
+    interval: 30s
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: order-service-monitor
+  labels:
+    openshift.io/user-monitoring: "true"
+spec:
+  targetLabels:
+  - app
+  selector:
+    matchLabels:
+      app: order
+  endpoints:
+  - port: http
+    path: /metrics
+    interval: 30s
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: payment-service-monitor
+  labels:
+    openshift.io/user-monitoring: "true"
+spec:
+  targetLabels:
+  - app
+  selector:
+    matchLabels:
+      app: payment
+  endpoints:
+  - port: http
+    path: /metrics
+    interval: 30s
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ui-service-monitor
+  labels:
+    openshift.io/user-monitoring: "true"
+spec:
+  targetLabels:
+  - app
+  selector:
+    matchLabels:
+      app: ui
+  endpoints:
+  - port: http
+    path: /metrics
+    interval: 30s
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: istio-ingressgateway-service-monitor
+  labels:
+    openshift.io/user-monitoring: "true"
+spec:
+  targetLabels:
+  - app
+  selector:
+    matchLabels:
+      app: istio-ingressgateway
+  endpoints:
+  - port: http-envoy-prom
+    path: /stats/prometheus
+    interval: 30s

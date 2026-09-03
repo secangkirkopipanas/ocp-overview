@@ -1,15 +1,16 @@
----
 apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata:
-  name: external-gateway
+  name: webstore-gateway
+  labels:
+    app: istio-ingressgateway
 spec:
   selector:
     istio: ingressgateway
   servers:
   - port:
       number: 80
-      name: http2
+      name: http
       protocol: HTTP
     hosts:
     - "*"

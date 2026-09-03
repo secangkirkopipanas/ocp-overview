@@ -3,5 +3,7 @@ kind: Namespace
 metadata:
   name: webstore-dev
   labels:
+    app.kubernetes.io/part-of: webstore
+    environment: dev
     istio-discovery: enabled
     istio-injection: enabled

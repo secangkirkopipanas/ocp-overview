@@ -1,0 +1,11 @@
+# Ensure Envoy istio_* metrics are generated for workloads in this namespace.
+# The mesh-wide Telemetry in istio-system should cover this too; this makes the
+# intent explicit for each deployed namespace (required for Kiali traffic graphs).
+apiVersion: telemetry.istio.io/v1
+kind: Telemetry
+metadata:
+  name: enable-prometheus-metrics
+spec:
+  metrics:
+  - providers:
+    - name: prometheus
