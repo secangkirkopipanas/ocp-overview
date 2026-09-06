@@ -1,0 +1,14 @@
+# Management Cluster (external-cp namespace)
+apiVersion: sailoperator.io/v1alpha1
+kind: Istio
+metadata:
+  name: default
+  namespace: external-cp
+spec:
+  version: v1.30.0
+  namespace: external-cp
+  values:
+    global:
+      meshID: mesh1
+      multiCluster:
+        clusterName: external-control-plane

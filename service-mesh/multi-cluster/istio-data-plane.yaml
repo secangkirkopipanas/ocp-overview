@@ -1,0 +1,16 @@
+# Data Plane Cluster 1 & Cluster 2 (istio-system namespace)
+apiVersion: sailoperator.io/v1alpha1
+kind: Istio
+metadata:
+  name: default
+  namespace: istio-system
+spec:
+  version: v1.30.0
+  namespace: istio-system
+  profile: remote
+  values:
+    global:
+      remotePilotAddress: istiod.external-cp.apps.mgmt-cluster.example.com
+      meshID: mesh1
+      multiCluster:
+        clusterName: cluster-1    # Set to cluster-2 on the second cluster
