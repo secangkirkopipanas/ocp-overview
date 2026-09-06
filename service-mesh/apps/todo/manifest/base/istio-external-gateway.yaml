@@ -1,0 +1,19 @@
+# Unique selector so this Gateway is not merged onto the webstore ingress.
+# Both apps used to select istio: ingressgateway + hosts: "*", so istiod
+# programmed webstore VirtualService routes onto the todo ingress Envoy.
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: todo-gateway
+  labels:
+    app: istio-ingressgateway
+spec:
+  selector:
+    istio: todo-ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"

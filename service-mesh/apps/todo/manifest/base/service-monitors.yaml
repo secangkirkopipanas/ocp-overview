@@ -1,0 +1,50 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: todo-service-monitor
+  labels:
+    openshift.io/user-monitoring: "true"
+spec:
+  targetLabels:
+  - app
+  selector:
+    matchLabels:
+      app: todo
+  endpoints:
+  - port: http
+    path: /metrics
+    interval: 30s
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: user-service-monitor
+  labels:
+    openshift.io/user-monitoring: "true"
+spec:
+  targetLabels:
+  - app
+  selector:
+    matchLabels:
+      app: user
+  endpoints:
+  - port: http
+    path: /metrics
+    interval: 30s
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: istio-ingressgateway-service-monitor
+  labels:
+    openshift.io/user-monitoring: "true"
+spec:
+  targetLabels:
+  - app
+  selector:
+    matchLabels:
+      app: istio-ingressgateway
+  endpoints:
+  - port: http-envoy-prom
+    path: /stats/prometheus
+    interval: 30s

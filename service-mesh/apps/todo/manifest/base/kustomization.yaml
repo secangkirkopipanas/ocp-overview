@@ -1,0 +1,32 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+- pairs:
+    app.kubernetes.io/part-of: todo
+  includeSelectors: false
+
+resources:
+- redis.yaml
+- user.yaml
+- todo.yaml
+- istio-ingress-gateway.yaml
+- istio-external-gateway.yaml
+- istio-virtual-service.yaml
+- peer-authentication.yaml
+- destination-rules.yaml
+- envoy-filter.yaml
+- istio-proxies-podmonitor.yaml
+- service-monitors.yaml
+- telemetry.yaml
+- network-policies.yaml
+
+configMapGenerator:
+- name: todo-config
+  literals:
+  - REDIS_URL=redis://redis:6379/0
+  - USER_URL=http://user:8080
+  - API_VERSION=v1
+
+generatorOptions:
+  disableNameSuffixHash: true

@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: todo-prod
+
+resources:
+- ../../base
+- namespace.yaml
+
+images:
+- name: quay.io/rh_rh/ocp-todo
+  newTag: prod
+- name: quay.io/rh_rh/ocp-todo-user
+  newTag: prod
+
+replicas:
+- name: todo
+  count: 2
+- name: user
+  count: 2

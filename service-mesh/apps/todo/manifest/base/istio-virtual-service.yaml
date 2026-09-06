@@ -1,0 +1,39 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: todo
+spec:
+  hosts:
+  - "todo-ingress-todo-dev.apps.cluster-thslr.thslr.sandbox3529.opentlc.com"
+  gateways:
+  - todo-gateway
+  http:
+  - name: users
+    match:
+    - uri:
+        prefix: /api/users
+    route:
+    - destination:
+        host: user
+        subset: v1
+        port:
+          number: 8080
+    timeout: 5s
+  - name: todos
+    match:
+    - uri:
+        prefix: /api/todos
+    route:
+    - destination:
+        host: todo
+        subset: v1
+        port:
+          number: 8080
+    timeout: 5s
+  - name: ui
+    route:
+    - destination:
+        host: todo
+        subset: v1
+        port:
+          number: 8080
