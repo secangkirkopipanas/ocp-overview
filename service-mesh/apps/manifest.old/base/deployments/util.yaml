@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: util
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: util
+  template:
+    metadata:
+      labels:
+        app: util
+        version: "1.0"
+    spec:
+      containers:
+      - name: util
+        image: quay.io/rh_rh/ubi9-util:latest
+        imagePullPolicy: Always
+        command: [ "/bin/tail", "-f", "/dev/null" ]
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

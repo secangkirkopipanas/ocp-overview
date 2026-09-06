@@ -1,0 +1,9 @@
+kind: Kustomization
+
+namespace: webstore-dev
+resources:
+- ../../base/
+- ns.yaml
+
+patches:
+- path: delete-ns-patch.yaml
