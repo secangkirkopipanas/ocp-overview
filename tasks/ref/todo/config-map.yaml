@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: todo-config
+data:
+  API_VERSION: v1
+  REDIS_URL: redis://redis:6379/0
+  USER_URL: http://user:8080

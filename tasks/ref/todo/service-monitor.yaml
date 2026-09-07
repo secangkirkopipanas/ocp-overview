@@ -1,0 +1,77 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: todo-service-monitor
+  labels:
+    openshift.io/user-monitoring: "true"
+spec:
+  selector:
+    matchLabels:
+      app: todo
+  endpoints:
+  - port: http
+    path: /metrics
+    interval: 30s
+  targetLabels:
+  - app
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: user-service-monitor
+  labels:
+    openshift.io/user-monitoring: "true"
+spec:
+  selector:
+    matchLabels:
+      app: user
+  endpoints:
+  - port: http
+    path: /metrics
+    interval: 30s
+  targetLabels:
+  - app
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: istio-ingressgateway-service-monitor
+  labels:
+    openshift.io/user-monitoring: "true"
+spec:
+  selector:
+    matchLabels:
+      app: istio-ingressgateway
+  endpoints:
+  - port: http-envoy-prom
+    path: /stats/prometheus
+    interval: 30s
+  targetLabels:
+  - app
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: istio-proxies-monitor
+  labels:
+    openshift.io/user-monitoring: "true"
+spec:
+  selector:
+    matchExpressions:
+    - key: istio-prometheus-ignore
+      operator: DoesNotExist
+  podMetricsEndpoints:
+  - interval: 30s
+    path: /stats/prometheus
+    relabelings:
+    - action: keep
+      regex: istio-proxy
+      sourceLabels:
+      - __meta_kubernetes_pod_container_name
+    - action: replace
+      sourceLabels:
+      - __meta_kubernetes_namespace
+      targetLabel: namespace

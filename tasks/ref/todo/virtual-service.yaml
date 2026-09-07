@@ -1,0 +1,41 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: todo
+spec:
+  gateways:
+  - todo-gateway
+  hosts:
+  - "*"
+  http:
+  - name: users
+    match:
+    - uri:
+        prefix: /api/users
+    route:
+    - destination:
+        host: user
+        port:
+          number: 8080
+        subset: v1
+    timeout: 5s
+
+  - name: todos
+    match:
+    - uri:
+        prefix: /api/todos
+    route:
+    - destination:
+        host: todo
+        port:
+          number: 8080
+        subset: v1
+    timeout: 5s
+
+  - name: ui
+    route:
+    - destination:
+        host: todo
+        port:
+          number: 8080
+        subset: v1

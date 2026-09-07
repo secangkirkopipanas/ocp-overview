@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: istio-ingressgateway
+  labels:
+    app: istio-ingressgateway
+    istio: todo-ingressgateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      istio: todo-ingressgateway
+  template:
+    metadata:
+      labels:
+        app: istio-ingressgateway
+        istio: todo-ingressgateway
+      annotations:
+        inject.istio.io/templates: gateway
+        sidecar.istio.io/inject: "true"
+        proxy.istio.io/config: |
+          gatewayTopology:
+            numTrustedProxies: 1
+    spec:
+      containers:
+      - name: istio-proxy
+        image: auto
+        args:
+        - proxy
+        - router
+        - --domain
+        - \$(POD_NAMESPACE).svc.cluster.local
+        ports:
+        - containerPort: 8080
+          name: http
+        - containerPort: 8443
+          name: https
+        - containerPort: 15021
+          name: status-port
+        readinessProbe:
+          httpGet:
+            path: /healthz/ready
+            port: status-port
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: istio-ingressgateway
+  labels:
+    app: istio-ingressgateway
+    istio: todo-ingressgateway
+spec:
+  type: ClusterIP
+  selector:
+    istio: todo-ingressgateway
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+  - name: https
+    port: 443
+    targetPort: 8443
+  - name: http-envoy-prom
+    port: 15090
+    targetPort: 15090
+
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: todo-ingress
+spec:
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  to:
+    kind: Service
+    name: istio-ingressgateway
+    weight: 100
