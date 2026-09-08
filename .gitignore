@@ -53,7 +53,7 @@ logs/
 # OS / tooling
 Thumbs.db
 
-src/
+apps/
 *.crt
 *.key
 
