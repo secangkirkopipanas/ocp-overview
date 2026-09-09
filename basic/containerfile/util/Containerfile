@@ -1,5 +1,7 @@
 FROM registry.access.redhat.com/ubi10/ubi:10.1
 
+ARG version=1.0
+
 RUN \
     dnf install -y \
             python3 \
@@ -8,8 +10,11 @@ RUN \
             nmap-ncat \
         && dnf clean all
 
-COPY resources/helloworld.txt /tmp/helloworld1.txt
+COPY resources/helloworld.txt /tmp/helloworld-${version}.txt
+ADD resources/RedHatFont-4.1.0.tar.gz /tmp/
 
 ENV MYNAME "Red Hat"
+
+WORKDIR /tmp
 
 CMD [ "/bin/tail", "-f", "/dev/null" ]
