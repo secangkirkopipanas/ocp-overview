@@ -5,4 +5,11 @@ RUN \
             python3 \
             python3-pip \
             iputils \
+            nmap-ncat \
         && dnf clean all
+
+COPY resources/helloworld.txt /tmp/helloworld1.txt
+
+ENV MYNAME "Red Hat"
+
+CMD [ "/bin/tail", "-f", "/dev/null" ]
