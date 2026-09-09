@@ -1,0 +1,6 @@
+#!/bin/bash
+
+export IMAGE_REGISTRY="default-route-openshift-image-registry.apps.cluster-thslr.thslr.sandbox3529.opentlc.com"
+export NAMESPACE=$(oc project -q)
+export OC_USER=$(oc whoami)
+export OC_TOKEN=$(oc whoami -t)
