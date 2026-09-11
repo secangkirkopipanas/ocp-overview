@@ -4,6 +4,7 @@ kind: Kustomization
 labels:
 - pairs:
     app.kubernetes.io/part-of: todo
+    app.kubernetes.io/managed-by: argocd
   includeSelectors: false
 
 resources:
