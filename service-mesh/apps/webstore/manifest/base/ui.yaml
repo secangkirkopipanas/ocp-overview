@@ -25,18 +25,26 @@ spec:
           httpGet:
             path: /metrics
             port: http
+          timeoutSeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
           failureThreshold: 30
-          periodSeconds: 2
         readinessProbe:
           httpGet:
             path: /metrics
             port: http
+          timeoutSeconds: 5
           periodSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
         livenessProbe:
           httpGet:
             path: /metrics
             port: http
+          timeoutSeconds: 5
           periodSeconds: 15
+          successThreshold: 1
+          failureThreshold: 3
         resources:
           requests:
             cpu: 50m
